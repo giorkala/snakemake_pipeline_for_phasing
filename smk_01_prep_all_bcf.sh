@@ -1,9 +1,15 @@
 #!/bin/bash
 #
 # prepare all the BCF files required for phasing - this is treaky as several files are needed
-# there are all included in ./sample_lists/
-# In brief, A) extract common variants 
-#
+# which should be included in ./sample_lists/
+# In brief, to merge WES and array variants we proceed as follows:
+# 1. extract "common" variants (AF>0.001)
+# 2. we filter-out anything tagged as "ExcessHet" (you might have to remove this filter)
+# 3. we filter-out indels longer than 25bp (if any; see discussion with high numbers of pLoF genotypes)
+# we save those to a VCF. Then we prepare array variants and make another VCF
+# For any overlapping variants, we chose those in the WES dataset. Then merge the two VCFs, and save as BCF.
+# To prepare the rare variants we follow a similar procedure but simpler.
+# Note that we should exclude variants in LCRs, but that can be dealt with in the annotation.
 
 ### resources ###
 module load common-apps/bcftools/1.16
