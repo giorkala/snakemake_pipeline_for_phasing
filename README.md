@@ -16,16 +16,16 @@ In brief, to phase rare WES variants (rule-3) we first need to phase array genot
 * Data assumed at hand: BED for array; VCF for WES. Fix the corresponding paths in `Snakefile`.
 
 ### Important notes ####
-* The working directory should be the one from where the scripts will be executed. 
-* A few lists of sample IDs -- such as a map between array and WES indices, list of parents, etc -- are required in several parts of the pipeline. These can be generated once, e.g. with the `smk_00_prep_sample_lists.sh`, and are assumed to be in the sample_lists folder. But this file is GNH-specific, so please make any such lists appropriately.
-* Each script requires a few params, such as paths to genetic maps, or chunk lists. These are not pre-defined and need to be passed as arguments.
 * Software dependencies: bcftools (+HTSlib), SHAPEIT5, snakemake (+Python).
+* The working directory should be the one from where the scripts will be executed. 
+* A few lists of sample IDs -- such as a map between array and WES indices, list of parents, etc -- are required in several parts of the pipeline. These can be generated once, e.g. with the `smk_00_prep_sample_lists.sh`, and are assumed to be in the sample_lists folder. But this file is GNH-specific, so please make any such lists appropriately. In fact, this step could be skipped completely!
+* Also, if no trios are sequenced, "phase_trios" and "assess_phasing" are not possible, thus the corresponding rules can be left out.
+* Each script requires a few params, such as paths to genetic maps, or chunk lists. These are not pre-defined and need to be passed as arguments.
 * For trio phasing, as min-AC ~ 1/300, no rare variants exist, thus phasing is just one step. This is performed with `smk_02_phase_common.sh`, but with the appropriate input (a BCF for trios-only and the pedigree).
-* I'm currently using a combination of binaries and modules for Shapeit5 (to deal with issues 34,56), please choose what's best.
 * [TODO] The SER analysis is performed using the `switch` tool provided by SHAPEIT5 - this might need to change , as we can similarly work with `bcftools +trio-switch-rate ...`, which requires simpler input.
 * Now using ligate instead of concat within phase-rare.
 * We need to use Shapeit v5.0.0 ("[preprint version](https://github.com/odelaneau/shapeit5/releases/tag/v1.0.0)" so as to get PP values for singletons. See the discussion [here](https://github.com/odelaneau/shapeit5/issues/56).
-* In case you face the "Invalid CONTIG id -1", see [here](https://github.com/odelaneau/shapeit5/issues/34), though the above solution should work anyway.
+* In case you face the "Invalid CONTIG id -1", see [here](https://github.com/odelaneau/shapeit5/issues/34), though the above solution should work anyway. These are the reasons why a combination of binaries and modules for Shapeit5; please choose what's best.
 
 #### How to - LSF ####
 * One way to make the pipeline work is to comment the rule "run_all" appropriately in `Snakefile`.
